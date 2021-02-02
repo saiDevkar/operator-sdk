@@ -87,7 +87,7 @@ func Add(mgr manager.Manager, options WatchOptions) error {
 	if options.WatchDependentResources {
 		watchDependentResources(mgr, r, c)
 	}
-
+	log.Info("Added this statement.")
 	log.Info("Watching resource", "apiVersion", options.GVK.GroupVersion(), "kind",
 		options.GVK.Kind, "namespace", options.Namespace, "reconcilePeriod", options.ReconcilePeriod.String())
 	return nil
