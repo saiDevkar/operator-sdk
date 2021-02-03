@@ -84,10 +84,20 @@ func Add(mgr manager.Manager, options WatchOptions) error {
 			return false
 		},
 		DeleteFunc: func(e event.DeleteEvent) bool {
-			return true
+			if val, ok := e.Object.GetLabels()[os.Getenv(k8sutil.FilterLabelKeyEnvVar)]; ok {
+				if val == os.Getenv(k8sutil.FilterLabelValueEnvVar) {
+					return true
+				}
+			}
+			return false
 		},
 		UpdateFunc: func(e event.UpdateEvent) bool {
-			return e.ObjectOld.GetGeneration() != e.ObjectNew.GetGeneration()
+			if val, ok := e.Object.GetLabels()[os.Getenv(k8sutil.FilterLabelKeyEnvVar)]; ok {
+				if val == os.Getenv(k8sutil.FilterLabelValueEnvVar) {
+					return true
+				}
+			}
+			return false
 		},
 	}
 
