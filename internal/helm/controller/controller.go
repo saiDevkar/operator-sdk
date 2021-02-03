@@ -16,6 +16,7 @@ package controller
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -75,8 +76,8 @@ func Add(mgr manager.Manager, options WatchOptions) error {
 
 	p = crtpredicate.Funcs{
 		CreateFunc: func(e event.CreateEvent) bool {
-			if val, ok := e.Object.GetLabels()["release"]; ok {
-				if val == "sai" {
+			if val, ok := e.Object.GetLabels()[os.Getenv(k8sutil.FilterLabelKeyEnvVar)]; ok {
+				if val == os.Getenv(k8sutil.FilterLabelValueEnvVar) {
 					return true
 				}
 			}
