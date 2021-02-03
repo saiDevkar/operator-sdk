@@ -27,9 +27,11 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
+	"sigs.k8s.io/controller-runtime/pkg/event"
 	crthandler "sigs.k8s.io/controller-runtime/pkg/handler"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
+	crtpredicate "sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 	"sigs.k8s.io/yaml"
 
@@ -40,6 +42,7 @@ import (
 )
 
 var log = logf.Log.WithName("helm.controller")
+var p crtpredicate.Predicate
 
 // WatchOptions contains the necessary values to create a new controller that
 // manages helm releases in a particular namespace based on a GVK watch.
@@ -70,6 +73,21 @@ func Add(mgr manager.Manager, options WatchOptions) error {
 	mgr.GetScheme().AddKnownTypeWithName(options.GVK, &unstructured.Unstructured{})
 	metav1.AddToGroupVersion(mgr.GetScheme(), options.GVK.GroupVersion())
 
+	p = crtpredicate.Funcs{
+		CreateFunc: func(e event.CreateEvent) bool {
+			if _, ok := e.Object.GetLabels()["release"]; !ok {
+				return false
+			}
+			return true
+		},
+		DeleteFunc: func(e event.DeleteEvent) bool {
+			return true
+		},
+		UpdateFunc: func(e event.UpdateEvent) bool {
+			return e.ObjectOld.GetGeneration() != e.ObjectNew.GetGeneration()
+		},
+	}
+
 	c, err := controller.New(controllerName, mgr, controller.Options{
 		Reconciler:              r,
 		MaxConcurrentReconciles: options.MaxConcurrentReconciles,
@@ -80,7 +98,7 @@ func Add(mgr manager.Manager, options WatchOptions) error {
 
 	o := &unstructured.Unstructured{}
 	o.SetGroupVersionKind(options.GVK)
-	if err := c.Watch(&source.Kind{Type: o}, &handler.InstrumentedEnqueueRequestForObject{}); err != nil {
+	if err := c.Watch(&source.Kind{Type: o}, &handler.InstrumentedEnqueueRequestForObject{}, p); err != nil {
 		return err
 	}
 
