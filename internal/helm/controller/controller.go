@@ -75,10 +75,12 @@ func Add(mgr manager.Manager, options WatchOptions) error {
 
 	p = crtpredicate.Funcs{
 		CreateFunc: func(e event.CreateEvent) bool {
-			if _, ok := e.Object.GetLabels()["release"]; !ok {
-				return false
+			if val, ok := e.Object.GetLabels()["release"]; ok {
+				if val == "sai" {
+					return true
+				}
 			}
-			return true
+			return false
 		},
 		DeleteFunc: func(e event.DeleteEvent) bool {
 			return true
