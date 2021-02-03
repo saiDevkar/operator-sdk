@@ -92,7 +92,8 @@ func Add(mgr manager.Manager, options WatchOptions) error {
 			return false
 		},
 		UpdateFunc: func(e event.UpdateEvent) bool {
-			if val, ok := e.Object.GetLabels()[os.Getenv(k8sutil.FilterLabelKeyEnvVar)]; ok {
+
+			if val, ok := e.ObjectNew.GetLabels()[os.Getenv(k8sutil.FilterLabelKeyEnvVar)]; ok {
 				if val == os.Getenv(k8sutil.FilterLabelValueEnvVar) {
 					return true
 				}
