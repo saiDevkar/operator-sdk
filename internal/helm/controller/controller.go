@@ -112,9 +112,17 @@ func Add(mgr manager.Manager, options WatchOptions) error {
 
 	o := &unstructured.Unstructured{}
 	o.SetGroupVersionKind(options.GVK)
-	if err := c.Watch(&source.Kind{Type: o}, &handler.InstrumentedEnqueueRequestForObject{}, p); err != nil {
-		return err
+	if envVarExists() {
+		if err := c.Watch(&source.Kind{Type: o}, &handler.InstrumentedEnqueueRequestForObject{}, p); err != nil {
+			return err
+		}
 	}
+	else {
+		if err := c.Watch(&source.Kind{Type: o}, &handler.InstrumentedEnqueueRequestForObject{}); err != nil {
+			return err
+		}
+	}
+	
 
 	if options.WatchDependentResources {
 		watchDependentResources(mgr, r, c)
@@ -180,4 +188,16 @@ func watchDependentResources(mgr manager.Manager, r *HelmOperatorReconciler, c c
 		return nil
 	}
 	r.releaseHook = releaseHook
+}
+
+func envVarExists() (bool) {
+	filterLabelKeyEnvValue, filterLabelKeyEnvExist := os.LookupEnv(k8sutil.FilterLabelKeyEnvVar)
+	filterLabelValueEnvValue, filterLabelValueEnvExist := os.LookupEnv(k8sutil.FilterLabelValueEnvVar)
+	
+	if filterLabelKeyEnvExist && filterLabelValueEnvExist && filterLabelKeyEnvValue != "" && filterLabelValueEnvValue != "" {
+		return true
+	}
+	else {
+		return false
+	}
 }
