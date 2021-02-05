@@ -164,3 +164,15 @@ func appendContent(fileContents, target, newContent string) (string, error) {
 	index := labelIndex + separationIndex + 1
 	return fileContents[:index] + newContent + fileContents[index:], nil
 }
+
+//FilterLabelEnvVarExists checks if the FILTER_LABEL_KEY and FILTER_LABEL_VALUE Env Var exist and are non empty
+//then returns true, else returns false
+func FilterLabelEnvVarExists() bool {
+	filterLabelKeyEnvValue, filterLabelKeyEnvExist := os.LookupEnv(k8sutil.FilterLabelKeyEnvVar)
+	filterLabelValueEnvValue, filterLabelValueEnvExist := os.LookupEnv(k8sutil.FilterLabelValueEnvVar)
+
+	if filterLabelKeyEnvExist && filterLabelValueEnvExist && filterLabelKeyEnvValue != "" && filterLabelValueEnvValue != "" {
+		return true
+	}
+	return false
+}

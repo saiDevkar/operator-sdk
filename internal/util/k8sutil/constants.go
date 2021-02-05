@@ -22,7 +22,11 @@ const (
 	// WatchNamespaceEnvVar is the constant for env variable WATCH_NAMESPACE
 	// which is the namespace where the watch activity happens.
 	// this value is empty if the operator is running with clusterScope.
-	WatchNamespaceEnvVar   = "WATCH_NAMESPACE"
-	FilterLabelKeyEnvVar   = "FILTER_LABEL_KEY"
+	WatchNamespaceEnvVar = "WATCH_NAMESPACE"
+	//FilterLabelKeyEnvVar is the constant for env variable FILTER_LABEL_KEY
+	// it stores the key attribute of the label which needs to be filtered in.
+	FilterLabelKeyEnvVar = "FILTER_LABEL_KEY"
+	//FilterLabelValueEnvVar is the constant for env variable FILTER_LABEL_VALUE
+	// it stores the key attribute of the label which needs to be filtered in.
 	FilterLabelValueEnvVar = "FILTER_LABEL_VALUE"
 )

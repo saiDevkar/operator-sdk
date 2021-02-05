@@ -40,6 +40,7 @@ import (
 	"github.com/operator-framework/operator-lib/predicate"
 	"github.com/operator-framework/operator-sdk/internal/helm/release"
 	"github.com/operator-framework/operator-sdk/internal/util/k8sutil"
+	"github.com/operator-framework/operator-sdk/internal/util/projutil"
 )
 
 var log = logf.Log.WithName("helm.controller")
@@ -112,7 +113,7 @@ func Add(mgr manager.Manager, options WatchOptions) error {
 
 	o := &unstructured.Unstructured{}
 	o.SetGroupVersionKind(options.GVK)
-	if envVarExists() {
+	if projutil.FilterLabelEnvVarExists() {
 		if err := c.Watch(&source.Kind{Type: o}, &handler.InstrumentedEnqueueRequestForObject{}, p); err != nil {
 			return err
 		}
@@ -187,7 +188,7 @@ func watchDependentResources(mgr manager.Manager, r *HelmOperatorReconciler, c c
 	r.releaseHook = releaseHook
 }
 
-func envVarExists() bool {
+/*func envVarExists() bool {
 	filterLabelKeyEnvValue, filterLabelKeyEnvExist := os.LookupEnv(k8sutil.FilterLabelKeyEnvVar)
 	filterLabelValueEnvValue, filterLabelValueEnvExist := os.LookupEnv(k8sutil.FilterLabelValueEnvVar)
 
@@ -196,4 +197,4 @@ func envVarExists() bool {
 	} else {
 		return false
 	}
-}
+}*/
