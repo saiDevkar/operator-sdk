@@ -21,6 +21,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/operator-framework/operator-sdk/internal/util/k8sutil"
 	log "github.com/sirupsen/logrus"
 	"sigs.k8s.io/kubebuilder/v2/pkg/model/config"
 )
