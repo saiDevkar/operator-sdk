@@ -82,7 +82,8 @@ func (r HelmOperatorReconciler) Reconcile(ctx context.Context, request reconcile
 	fmt.Println("o", o)
 
 	err := r.Client.Get(ctx, request.NamespacedName, o)
-	fmt.Println("o after", o)
+	//fmt.Println("o after", o)
+	fmt.Println("Labels:", o.GetLabels())
 	if apierrors.IsNotFound(err) {
 		return reconcile.Result{}, nil
 	}
