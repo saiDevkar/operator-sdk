@@ -18,6 +18,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -36,6 +37,7 @@ import (
 	"github.com/operator-framework/operator-sdk/internal/helm/internal/diff"
 	"github.com/operator-framework/operator-sdk/internal/helm/internal/types"
 	"github.com/operator-framework/operator-sdk/internal/helm/release"
+	"github.com/operator-framework/operator-sdk/internal/util/k8sutil"
 )
 
 // blank assignment to verify that HelmOperatorReconciler implements reconcile.Reconciler
