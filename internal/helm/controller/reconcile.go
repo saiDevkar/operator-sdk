@@ -78,14 +78,9 @@ func (r HelmOperatorReconciler) Reconcile(ctx context.Context, request reconcile
 		"kind", o.GetKind(),
 	)
 	log.V(1).Info("Reconciling")
-	//fmt.Println("Context", ctx)
-	//fmt.Println("request", request)
-	//fmt.Println("HelmOperatorReconciler", r)
-	//fmt.Println("o", o)
 
 	err := r.Client.Get(ctx, request.NamespacedName, o)
-	//fmt.Println("o after", o)
-	//fmt.Println("Labels:", o.GetLabels()["sai"])
+
 	if !(o.GetLabels()[os.Getenv(k8sutil.FilterLabelKeyEnvVar)] == os.Getenv(k8sutil.FilterLabelValueEnvVar)) {
 		return reconcile.Result{}, nil
 	}
