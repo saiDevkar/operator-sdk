@@ -83,10 +83,10 @@ func (r HelmOperatorReconciler) Reconcile(ctx context.Context, request reconcile
 
 	err := r.Client.Get(ctx, request.NamespacedName, o)
 	//fmt.Println("o after", o)
-	fmt.Println("Labels:", o.GetLabels()["sai"])
-	//if !(o.GetLabels()[os.Getenv(k8sutil.FilterLabelKeyEnvVar)] == os.Getenv(k8sutil.FilterLabelValueEnvVar)) {
-	//	return reconcile.Result{}, nil
-	//}
+	//fmt.Println("Labels:", o.GetLabels()["sai"])
+	if !(o.GetLabels()[os.Getenv(k8sutil.FilterLabelKeyEnvVar)] == os.Getenv(k8sutil.FilterLabelValueEnvVar)) {
+		return reconcile.Result{}, nil
+	}
 	if apierrors.IsNotFound(err) {
 		return reconcile.Result{}, nil
 	}
