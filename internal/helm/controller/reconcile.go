@@ -75,13 +75,14 @@ func (r HelmOperatorReconciler) Reconcile(ctx context.Context, request reconcile
 		"apiVersion", o.GetAPIVersion(),
 		"kind", o.GetKind(),
 	)
-	//log.V(1).Info("Reconciling")
+	log.V(1).Info("Reconciling")
 	fmt.Println("Context", ctx)
 	fmt.Println("request", request)
 	fmt.Println("HelmOperatorReconciler", r)
 	fmt.Println("o", o)
 
 	err := r.Client.Get(ctx, request.NamespacedName, o)
+	fmt.Println("error", err)
 	if apierrors.IsNotFound(err) {
 		return reconcile.Result{}, nil
 	}
